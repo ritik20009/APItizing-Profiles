@@ -63,7 +63,7 @@ class FileManager {
             else{
                 return
             }
-            success(object)
+            //success(object)
             DispatchQueue.main.async(execute:{ () -> Void in
                 success(object)
             })

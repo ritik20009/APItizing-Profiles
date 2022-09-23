@@ -296,22 +296,24 @@ class userDetailViewController: UIViewController {
 
         
         view.backgroundColor = .white
-        self.configure()
         
         let success: (_ res:UserDetail) -> ()  = {(res)-> Void in
             self.details = res
-           // self.hideLoader()
+            self.configure()
+            self.tableView.reloadData()
+            self.hideLoader()
         }
-        
+
         let showError: () -> ()  = {()-> Void in
             print("Inside error handler")
         }
-        
+
         let file = FileManager()
-        //self.showLoader()
+        self.showLoader()
         var url = "https://api.github.com/users/"
         url = url+(u_login ?? "")
         file.fetchResponse(apiUrl: url, success: success, failure: showError)
+        
     }
     
     func configure(){
@@ -477,6 +479,7 @@ class CustomeUserTableViewCell: UITableViewCell {
             
         }
         if(index==1){
+            self.value.numberOfLines=0
             key.text = self.userdatacons[index-1]
             value.text = data?.name
         }
@@ -485,6 +488,7 @@ class CustomeUserTableViewCell: UITableViewCell {
             value.text = data?.email
         }
         if(index==3){
+            self.value.numberOfLines=0
             key.text = self.userdatacons[index-1]
             value.text = data?.company
         }
