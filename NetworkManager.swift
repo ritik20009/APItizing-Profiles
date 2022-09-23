@@ -1,14 +1,14 @@
 //
-//  FileManager.swift
+//  NetworkManager.swift
 //  iOSLearningApp
 //
-//  Created by Ritik Rj on 14/09/22.
+//  Created by Ritik Raj on 23/09/22.
 //
 
 import Foundation
 import UIKit
 
-class FileManager {
+class NetworkManager {
     
     var response: SampleResponse? = SampleResponse(items: [])
     var details: UserDetail?
@@ -80,3 +80,4 @@ class FileManager {
         }).resume()
     }
 }
+

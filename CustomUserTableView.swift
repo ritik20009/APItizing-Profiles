@@ -92,8 +92,8 @@ class CustomeUserTableViewCell: UITableViewCell {
                 self.ProfileImgView.image = image
             }
             
-            let file = FileManager()
-            file.fetchImage(url: avatarurl, completion: setImage)
+            let network = NetworkManager()
+            network.fetchImage(url: avatarurl, completion: setImage)
                 
             
             
@@ -104,27 +104,24 @@ class CustomeUserTableViewCell: UITableViewCell {
             key.text = self.userdatacons[index-1]
             value.text = data?.name
         }
+        
         if(index==2){
-            key.text = self.userdatacons[index-1]
-            value.text = data?.email
-        }
-        if(index==3){
             self.value.numberOfLines=0
             key.text = self.userdatacons[index-1]
             value.text = data?.company
         }
-        if(index==4){
+        if(index==3){
             
             self.value.numberOfLines=0
             key.text = self.userdatacons[index-1]
             value.text = data?.location
         }
         
-        if(index==5){
+        if(index==4){
             key.text = self.userdatacons[index-1]
             value.text = data?.login
         }
-        if(index==6){
+        if(index==5){
             key.text = self.userdatacons[index-1]
             let repo_cnt : Int
             
@@ -132,7 +129,7 @@ class CustomeUserTableViewCell: UITableViewCell {
             
             value.text = "\(repo_cnt)"
         }
-        if(index==7){
+        if(index==6){
             key.text = self.userdatacons[index-1]
             let followers_cnt : Int
             
@@ -140,7 +137,7 @@ class CustomeUserTableViewCell: UITableViewCell {
             
             value.text = "\(followers_cnt)"
         }
-        if(index==8){
+        if(index==7){
             key.text = self.userdatacons[index-1]
             let following_cnt : Int
             

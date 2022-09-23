@@ -44,11 +44,11 @@ class userDetailViewController: UIViewController {
             print("Inside error handler")
         }
 
-        let file = FileManager()
+        let network = NetworkManager()
         self.showLoader()
         var url = "https://api.github.com/users/"
         url = url+(u_login ?? "")
-        file.fetchResponse(apiUrl: url, success: success, failure: showError)
+        network.fetchResponse(apiUrl: url, success: success, failure: showError)
         
     }
     

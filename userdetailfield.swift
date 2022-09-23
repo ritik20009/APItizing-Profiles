@@ -13,7 +13,6 @@ struct UserDetailField {
     static let constants = [
         
         "Name",
-        "Email",
         "Company",
         "Location",
         "Login",

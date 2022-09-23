@@ -50,10 +50,10 @@ class ViewController: UIViewController, UITableViewDelegate {
             print("Inside error handler")
         }
         
-        let file = FileManager()
+        let network = NetworkManager()
         showLoader()
         let url = "https://api.github.com/repos/apple/swift/pulls?page=\(pageNumber)&per_page=10"
-        file.fetchData(apiUrl: url,initialResponse: nil, success: success, failure: showError)
+        network.fetchData(apiUrl: url,initialResponse: nil, success: success, failure: showError)
     }
     
     func showLoader() {
@@ -155,9 +155,9 @@ extension ViewController: UITableViewDataSource {
                 print("Inside error handler")
             }
             
-            let file = FileManager()
+            let network = NetworkManager()
             let url = "https://api.github.com/repos/apple/swift/pulls?page=\(pageNumber)&per_page=10"
-            file.fetchData(apiUrl: url,initialResponse: response, success: success, failure: showError)
+            network.fetchData(apiUrl: url,initialResponse: response, success: success, failure: showError)
             
         }
     }

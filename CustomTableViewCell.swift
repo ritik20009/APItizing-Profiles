@@ -61,6 +61,7 @@ class CustomeTableViewCell: UITableViewCell{
             make.left.equalToSuperview().offset(10)
             make.width.height.equalTo(100)
             make.centerY.equalToSuperview()
+            make.bottom.lessThanOrEqualToSuperview().offset(-10).priority(.high)
             
         }
         
@@ -109,8 +110,8 @@ class CustomeTableViewCell: UITableViewCell{
             self.profileImageView.image = image
         }
         
-        let file = FileManager()
-        file.fetchImage(url: avatarurl, completion: setImage)
+        let network = NetworkManager()
+        network.fetchImage(url: avatarurl, completion: setImage)
         
         titleLable.text = data?.user?.login
         title.text = data?.title

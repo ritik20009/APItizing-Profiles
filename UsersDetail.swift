@@ -15,7 +15,6 @@ struct UserDetail: Decodable{
     var name: String?
     var company: String?
     var location: String?
-    var email: String?
     var public_repos: Int?
     var followers: Int?
     var following: Int?
