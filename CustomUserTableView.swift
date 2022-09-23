@@ -25,7 +25,6 @@ class CustomeUserTableViewCell: UITableViewCell {
     
     let ProfileImgView = UIImageView()
     
-    //var ProfileImgView = UIImageView()
     
     
     let containerView = UIView()
@@ -60,9 +59,6 @@ class CustomeUserTableViewCell: UITableViewCell {
     
     func setData(data: UserDetail?, index: Int){
         
-        
-//        print(details)
-        
         if(index==0){
             
             
@@ -84,20 +80,21 @@ class CustomeUserTableViewCell: UITableViewCell {
             }
             
             
-            let url = data?.avatar_url
+            guard let avatarurl = data?.avatar_url else{
+                return
+            }
             
-            URLSession.shared.dataTask(with: NSURL(string: (url) ?? "https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png")! as URL, completionHandler: { (data, response, error) -> Void in
-                if error != nil {
-                    print(error ?? "error")
+            let setImage = {(data: Data) -> Void in
+                guard let image = UIImage(data: data) else{
                     return
                 }
                 
-                let image = UIImage(data: data!)
-                DispatchQueue.main.async(execute: { () -> Void in
-                    self.ProfileImgView.image = image
-                })
-            }).resume()
+                self.ProfileImgView.image = image
+            }
             
+            let file = FileManager()
+            file.fetchImage(url: avatarurl, completion: setImage)
+                
             
             
             

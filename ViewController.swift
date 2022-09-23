@@ -91,7 +91,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         self.view.backgroundColor = .white
         titleLabel.text = "Table"
         view.addSubview(titleLabel)
-        //        tableView.rowHeight = 100
+    
         titleLabel.snp.makeConstraints{make in
             make.top.equalToSuperview().offset(50)
             make.left.equalToSuperview().offset(175)
@@ -141,7 +141,6 @@ extension ViewController: UITableViewDataSource {
             return
         }
         
-        //print("QQQQ \(indexPath.row)")
         if(indexPath.row == tableSize - 2){
             
             

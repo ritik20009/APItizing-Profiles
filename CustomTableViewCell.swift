@@ -12,6 +12,8 @@ import SnapKit
 class CustomeTableViewCell: UITableViewCell{
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?){
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        
         self.configure()
     }
     
@@ -33,6 +35,11 @@ class CustomeTableViewCell: UITableViewCell{
         containerView.backgroundColor = .white
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = 15
+//        containerView.layer.shadowOffset = CGSize(width: 0, height: 0)
+//        containerView.layer.shadowRadius = 5
+//        containerView.layer.shadowOpacity = 0.2
+//        containerView.layer.shadowColor = UIColor.black.cgColor
+
         containerView.snp.makeConstraints{make in
             make.top.left.equalToSuperview().offset(10)
             make.right.bottom.equalToSuperview().offset(-10)
@@ -90,17 +97,20 @@ class CustomeTableViewCell: UITableViewCell{
     
     func setData(data: Item?) -> String{
         
-        URLSession.shared.dataTask(with: NSURL(string: (data?.user?.avatar_url) ?? "https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png")! as URL, completionHandler: { (data, response, error) -> Void in
-            if error != nil {
-                print(error ?? "error")
+        guard let avatarurl = data?.user?.avatar_url else{
+            return ""
+        }
+        
+        let setImage = {(data: Data) -> Void in
+            guard let image = UIImage(data: data) else{
                 return
             }
             
-            let image = UIImage(data: data!)
-            DispatchQueue.main.async(execute: { () -> Void in
-                self.profileImageView.image = image
-            })
-        }).resume()
+            self.profileImageView.image = image
+        }
+        
+        let file = FileManager()
+        file.fetchImage(url: avatarurl, completion: setImage)
         
         titleLable.text = data?.user?.login
         title.text = data?.title

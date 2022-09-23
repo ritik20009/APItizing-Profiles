@@ -6,25 +6,12 @@
 //
 
 import Foundation
+import UIKit
 
 class FileManager {
     
     var response: SampleResponse? = SampleResponse(items: [])
     var details: UserDetail?
-    //    class func loadJson(filename fileName: String) -> SampleResponse? {
-    //        if let url = Bundle.main.url(forResource: fileName, withExtension: "json") {
-    //            do {
-    //                let data = try Data(contentsOf: url)
-    //
-    //                let object = try JSONDecoder().decode(SampleResponse.self, from:data)
-    //                return object
-    //
-    //            } catch {
-    //                print("Error!! Unable to parse  \(fileName).json")
-    //            }
-    //        }
-    //        return nil
-    //    }
     
     func fetchData(apiUrl: String,initialResponse: SampleResponse?,success:@escaping (SampleResponse)->(), failure:@escaping ()->()) {
         if initialResponse == nil{
@@ -69,5 +56,27 @@ class FileManager {
             })
         }).resume()
         
+    }
+    
+    func fetchImage(url: String, completion: @escaping(Data) -> Void) {
+        
+        guard let nsUrl = NSURL(string: url) else{
+            return
+        }
+        
+        URLSession.shared.dataTask(with: nsUrl as URL, completionHandler: { (data, response, error) -> Void in
+            if error != nil {
+                print(error as Any)
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            DispatchQueue.main.async(execute: { () -> Void in
+                completion(data)
+            })
+        }).resume()
     }
 }
