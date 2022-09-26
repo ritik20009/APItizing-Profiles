@@ -7,11 +7,8 @@
 
 import Foundation
 
-
 struct UserDetailField {
-    
     static let constants = [
-        
         "Name",
         "Company",
         "Location",

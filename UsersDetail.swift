@@ -10,7 +10,6 @@
 //
 
 struct UserDetail: Decodable{
-
     var login: String?
     var name: String?
     var company: String?
@@ -19,5 +18,4 @@ struct UserDetail: Decodable{
     var followers: Int?
     var following: Int?
     var avatar_url: String?
-
 }
