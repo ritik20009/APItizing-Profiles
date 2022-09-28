@@ -110,8 +110,8 @@ extension ViewController: UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let userDetailsViewController = userDetailViewController()
-        user_login = response?.items?[indexPath.row].user?.login
-        userDetailsViewController.u_login = user_login
+        user_login = (response?.items?[indexPath.row].user?.login)!
+        userDetailsViewController.u_login = user_login ?? ""
         self.navigationController?.pushViewController(userDetailsViewController, animated: true)
     }
 }

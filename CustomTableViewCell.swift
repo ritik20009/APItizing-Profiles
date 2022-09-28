@@ -13,6 +13,10 @@ class CustomTableViewCell: UITableViewCell{
     
     private let Constantitems = ConstantItems.items
     let ViewModel = HomePageViewModel()
+    let favouriteButton = UIButton()
+    var username: String = ""
+    
+    var userDetailViewreference = userDetailViewController()
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?){
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.configure()
@@ -23,11 +27,12 @@ class CustomTableViewCell: UITableViewCell{
     private let bodyView = UILabel()
     private let containerView = UIView()
     func configure() {
+        
+        print(username)
         self.titleLable.numberOfLines = 0
         self.title.numberOfLines = 0
         self.bodyView.numberOfLines = 0
         self.contentView.addSubview(containerView)
-        
         self.contentView.backgroundColor = .white
         containerView.backgroundColor = .white
         containerView.clipsToBounds = true
@@ -40,6 +45,7 @@ class CustomTableViewCell: UITableViewCell{
         self.containerView.addSubview(profileImageView)
         self.containerView.addSubview(title)
         self.containerView.addSubview(bodyView)
+        self.containerView.addSubview(favouriteButton)
         containerView.layer.borderWidth = 1.0
         containerView.layer.borderColor = UIColor.black.cgColor
         profileImageView.image = UIImage(named: Constantitems[5])
@@ -57,6 +63,11 @@ class CustomTableViewCell: UITableViewCell{
             make.top.equalToSuperview().offset(10)
             make.left.equalTo(profileImageView.snp.right).offset(20)
         }
+        favouriteButton.snp.makeConstraints{make in
+            make.top.equalToSuperview().offset(15)
+            make.left.equalTo(titleLable).offset(215)
+            make.right.equalToSuperview().offset(-5)
+        }
         title.snp.makeConstraints{ make in
             make.top.equalTo(titleLable.snp.bottom).offset(10)
             make.left.equalTo(profileImageView.snp.right).offset(20)
@@ -70,6 +81,7 @@ class CustomTableViewCell: UITableViewCell{
             make.bottom.equalToSuperview().offset(-5)
         }
         bodyView.font = bodyView.font.withSize(15)
+
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -87,6 +99,13 @@ class CustomTableViewCell: UITableViewCell{
         
         let network = NetworkManager()
         network.fetchImage(url: avatarurl, completion: setImage)
+        username = data?.user?.login ?? ""
+        if UserDefaults.standard.object(forKey: "favourite\(username)")==nil {
+            favouriteButton.setImage(UIImage(systemName: "star"), for: UIControl.State.normal)
+        }
+        else{
+            favouriteButton.setImage(UIImage(systemName: "star.fill"), for: UIControl.State.normal)
+        }
         titleLable.text = data?.user?.login
         title.text = data?.title
         bodyView.text = data?.body

@@ -15,18 +15,8 @@ class UserDetailsViewModel {
     var u_login: String = ""
     func fetchData () -> () {
         
-//        let success: (_ res:UserDetail) -> ()  = {(res)-> Void in
-//            self.details = res
-//            self.delegate?.dataLoaded()
-//            self.delegate?.hideLoader()
-//        }
-//        let showError: () -> ()  = {()-> Void in
-//            print("Inside error handler")
-//        }
         let network = NetworkManager()
-        var loginUrl = "https://api.github.com/users/"
-        loginUrl = loginUrl+(self.u_login)
-        network.fetchResponse(url: loginUrl, completionHandler: {(data:UserDetail?) in
+        network.fetchResponse(userDetailsApi(u_login: u_login), completionHandler: {(data:UserDetail?) in
             guard let data = data else {
                 return
             }
@@ -34,5 +24,17 @@ class UserDetailsViewModel {
             self.delegate?.dataLoaded()
             self.delegate?.hideLoader()
         })
+    }
+}
+
+struct userDetailsApi: API{
+    
+    var u_login: String = ""
+    var path: String{
+        return "/users/\(u_login)"
+    }
+    
+    var QueryParams: [String : String]?{
+        return nil
     }
 }

@@ -16,15 +16,34 @@ class userDetailViewController: UIViewController {
     private let spinner = UIActivityIndicatorView()
     private let loadingLabel = UILabel()
     private let loadingView = UIView()
+    private var FavouriteButton = UIBarButtonItem()
+    private var DownloadButton = UIBarButtonItem()
+    
+
     var details: UserDetail?
     var u_login: String?
     let UserViewModel =  UserDetailsViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         UserViewModel.u_login = u_login ?? ""
         self.showLoader()
         UserViewModel.delegate=self
+        self.showSaveButton()
+        self.showFavouriteButton()
+        if UserDefaults.standard.object(forKey: "favourite\(String(describing: u_login))")==nil{
+            FavouriteButton.image = UIImage(systemName: "star")
+        }
+        else{
+            FavouriteButton.image = UIImage(systemName: "star.fill")
+        }
+        if UserDefaults.standard.object(forKey: u_login ?? "")==nil{
+            DownloadButton.image = UIImage(systemName: "square.and.arrow.down")
+        }
+        else{
+            DownloadButton.image = UIImage(systemName: "delete.forward.fill")
+        }
         self.UserViewModel.fetchData()
     }
     func configure(){
@@ -43,6 +62,7 @@ class userDetailViewController: UIViewController {
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(header.snp.bottom)
         }
+        self.navigationItem.rightBarButtonItems = [DownloadButton,FavouriteButton]
     }
     func showLoader() {
         view.backgroundColor = .white
@@ -65,6 +85,104 @@ class userDetailViewController: UIViewController {
             make.left.equalTo(spinner.snp.right).offset(30)
         }
         spinner.startAnimating()
+    }
+    
+    func showSaveButton() {
+        DownloadButton.style = .plain
+        DownloadButton.target = self
+        DownloadButton.action = #selector(saveButtonAction)
+    }
+    func deleteButton(){
+        DownloadButton.style = .plain
+        DownloadButton.target = self
+        DownloadButton.action = #selector(deleteButtonAction)
+    }
+    func showFavouriteButton() {
+        FavouriteButton.style = .plain
+        FavouriteButton.target = self
+        FavouriteButton.action = #selector(favouriteButtonAction)
+        //FavouriteButton.image = UIImage(systemName: "star")
+    }
+    
+    @objc func favouriteButtonAction(){
+        
+        let data: String = ""
+        if UserDefaults.standard.object(forKey: "favourite\(String(describing: u_login))")==nil {
+            UserDefaults.standard.set(data, forKey: "favourite\(String(describing: u_login))")
+            FavouriteButton.image = UIImage(systemName: "star.fill")
+        }
+        else{
+            UserDefaults.standard.removeObject(forKey: "favourite\(String(describing: u_login))")
+            FavouriteButton.image = UIImage(systemName: "star")
+        }
+    }
+    @objc func saveButtonAction(){
+        
+
+        guard let u_login = u_login else{
+            return
+        }
+        
+        guard let encodedData = try? JSONEncoder().encode(details) else { return }
+        guard let jsonString = String(data: encodedData, encoding: .utf8) else{
+            return
+        }
+        
+        if UserDefaults.standard.object(forKey: u_login )==nil{
+            UserDefaults.standard.set(jsonString, forKey: u_login)
+            DownloadButton.image = UIImage(systemName: "delete.forward.fill")
+            let dialogMessage = UIAlertController(title: "Saved", message: "Data has been saved successfully", preferredStyle: .alert)
+            self.present(dialogMessage, animated: true, completion: nil)
+            
+            let when = DispatchTime.now() + 2
+            DispatchQueue.main.asyncAfter(deadline: when){
+              // your code with delay
+              dialogMessage.dismiss(animated: true, completion: nil)
+            }
+        }
+        else{
+            deleteButtonAction()
+        }
+        
+    }
+    @objc func deleteButtonAction(){
+        
+        guard let u_login = u_login else{
+            return
+        }
+        if UserDefaults.standard.object(forKey: u_login )==nil{
+            return
+        }
+        else{
+            let dialogMessage = UIAlertController(title: "Confirm", message: "Are you sure you want to delete this?", preferredStyle: .alert)
+                    
+                    // Create OK button with action handler
+                    let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                        UserDefaults.standard.removeObject(forKey: u_login)
+                        self.DownloadButton.image = UIImage(systemName: "square.and.arrow.down")
+                        let alerting = UIAlertController(title: "Deleted", message: "Data has been deleted successfully", preferredStyle: .alert)
+                        self.present(alerting, animated: true, completion: nil)
+                        
+                        let when = DispatchTime.now() + 1
+                        DispatchQueue.main.asyncAfter(deadline: when){
+                          // your code with delay
+                          alerting.dismiss(animated: true, completion: nil)
+                        }
+                    })
+                    
+                    // Create Cancel button with action handlder
+                    let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
+                        return
+                    }
+                    
+                    //Add OK and Cancel button to dialog message
+                    dialogMessage.addAction(ok)
+                    dialogMessage.addAction(cancel)
+                    
+                    // Present dialog message to user
+                    self.present(dialogMessage, animated: true, completion: nil)
+            
+        }
     }
 }
 extension userDetailViewController: UITableViewDataSource {

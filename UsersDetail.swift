@@ -9,7 +9,7 @@
 //
 //
 
-struct UserDetail: Decodable{
+struct UserDetail: Encodable, Decodable{
     var login: String?
     var name: String?
     var company: String?

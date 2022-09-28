@@ -10,28 +10,35 @@ import UIKit
 class HomePageViewModel {
     var response: SampleResponse? = SampleResponse(items: [])
     var delegate:ViewControllerProtocol?
-    var pageNumber = 1
+    var pagenumber = 1
     func fetchData() -> () {
-//        let success: (_ res:SampleResponse) -> ()  = {(res)-> Void in
-//            self.response = res
-//            self.delegate?.dataLoaded()
-//            self.delegate?.hideLoader()
-//        }
-//        let showError: () -> ()  = {()-> Void in
-//            print("Inside error handler")
-//        }
         let network = NetworkManager()
-        let homeUrl = "https://api.github.com/repos/apple/swift/pulls?page=\(self.pageNumber)&per_page=10"
-        //network.fetchData(apiUrl: homeurl,initialResponse: response, success: success, failure: showError)
         
-        network.fetchResponse(url: homeUrl, completionHandler: {(data:[Item]?) in
+        network.fetchResponse(PullRequestApi(pageNumber: self.pagenumber), completionHandler: {(data:[Item]?) in
             guard let data = data else {
                 return
             }
             self.response?.items?.append(contentsOf: data)
             self.delegate?.dataLoaded()
             self.delegate?.hideLoader()
+            self.pagenumber+=1
         })
-        pageNumber+=1
     }
+}
+
+struct PullRequestApi: API {
+    
+    var pageNumber: Int
+    let pageSize: Int = 10
+    var path: String{
+        return "/repos/apple/swift/pulls"
+    }
+    
+    var QueryParams: [String : String]?{
+        return ["page":"\(pageNumber)", "per_page":"\(pageSize)"]
+    }
+    
+    var headers: [String : String]?
+    
+    var body: [String : String]?
 }
