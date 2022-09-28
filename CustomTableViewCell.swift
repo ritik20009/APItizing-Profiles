@@ -83,6 +83,18 @@ class CustomTableViewCell: UITableViewCell{
         bodyView.font = bodyView.font.withSize(15)
 
     }
+    
+    @objc func markFavourite(){
+//        let data: String = ""
+        UserDefaults.standard.set("", forKey: Utils.shared.getKeyForFavourite(userName: username))
+//        favouriteButton.setImage(UIImage(systemName: "star.fill"), for: UIControl.State.normal)
+        NotificationCenter.default.post(name: NSNotification.Name("observer"), object: nil)
+    }
+    @objc func unMarkFavourite(){
+        NotificationCenter.default.post(name: NSNotification.Name("observer"), object: nil)
+        UserDefaults.standard.removeObject(forKey: Utils.shared.getKeyForFavourite(userName: username))
+//        favouriteButton.setImage(UIImage(systemName: "star"), for: UIControl.State.normal)
+    }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -100,11 +112,15 @@ class CustomTableViewCell: UITableViewCell{
         let network = NetworkManager()
         network.fetchImage(url: avatarurl, completion: setImage)
         username = data?.user?.login ?? ""
-        if UserDefaults.standard.object(forKey: "favourite\(username)")==nil {
+        print("I am here")
+        if UserDefaults.standard.object(forKey: Utils.shared.getKeyForFavourite(userName: username))==nil {
+            print("\(username) is not favourite")
             favouriteButton.setImage(UIImage(systemName: "star"), for: UIControl.State.normal)
+            favouriteButton.addTarget(self, action: #selector(markFavourite), for: .touchUpInside)
         }
         else{
             favouriteButton.setImage(UIImage(systemName: "star.fill"), for: UIControl.State.normal)
+            favouriteButton.addTarget(self, action: #selector(unMarkFavourite), for: .touchUpInside)
         }
         titleLable.text = data?.user?.login
         title.text = data?.title

@@ -112,6 +112,11 @@ extension ViewController: UITableViewDataSource {
         let userDetailsViewController = userDetailViewController()
         user_login = (response?.items?[indexPath.row].user?.login)!
         userDetailsViewController.u_login = user_login ?? ""
+        let reloadTable:(Notification)->Void = {make in
+            print("notification received")
+            tableView.reloadData()
+        }
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("observer"), object: nil, queue: nil, using: reloadTable)
         self.navigationController?.pushViewController(userDetailsViewController, animated: true)
     }
 }

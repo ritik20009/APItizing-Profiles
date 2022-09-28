@@ -21,13 +21,13 @@ class userDetailViewController: UIViewController {
     
 
     var details: UserDetail?
-    var u_login: String?
+    var u_login: String = ""
     let UserViewModel =  UserDetailsViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        UserViewModel.u_login = u_login ?? ""
+        UserViewModel.u_login = u_login
         self.showLoader()
         UserViewModel.delegate=self
         self.showSaveButton()
@@ -107,21 +107,17 @@ class userDetailViewController: UIViewController {
     @objc func favouriteButtonAction(){
         
         let data: String = ""
-        if UserDefaults.standard.object(forKey: "favourite\(String(describing: u_login))")==nil {
-            UserDefaults.standard.set(data, forKey: "favourite\(String(describing: u_login))")
+        if UserDefaults.standard.object(forKey: "favourite\(u_login)")==nil {
+            UserDefaults.standard.set(data, forKey: "favourite\(u_login)")
             FavouriteButton.image = UIImage(systemName: "star.fill")
         }
         else{
-            UserDefaults.standard.removeObject(forKey: "favourite\(String(describing: u_login))")
+            UserDefaults.standard.removeObject(forKey: "favourite\(u_login)")
             FavouriteButton.image = UIImage(systemName: "star")
         }
+        NotificationCenter.default.post(name: NSNotification.Name("observer"), object: nil)
     }
     @objc func saveButtonAction(){
-        
-
-        guard let u_login = u_login else{
-            return
-        }
         
         guard let encodedData = try? JSONEncoder().encode(details) else { return }
         guard let jsonString = String(data: encodedData, encoding: .utf8) else{
@@ -146,10 +142,6 @@ class userDetailViewController: UIViewController {
         
     }
     @objc func deleteButtonAction(){
-        
-        guard let u_login = u_login else{
-            return
-        }
         if UserDefaults.standard.object(forKey: u_login )==nil{
             return
         }
@@ -158,7 +150,7 @@ class userDetailViewController: UIViewController {
                     
                     // Create OK button with action handler
                     let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-                        UserDefaults.standard.removeObject(forKey: u_login)
+                        UserDefaults.standard.removeObject(forKey: self.u_login)
                         self.DownloadButton.image = UIImage(systemName: "square.and.arrow.down")
                         let alerting = UIAlertController(title: "Deleted", message: "Data has been deleted successfully", preferredStyle: .alert)
                         self.present(alerting, animated: true, completion: nil)
