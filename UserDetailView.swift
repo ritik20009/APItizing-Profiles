@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class userDetailViewController: UIViewController {
+class UserDetailViewController: UIViewController {
     private let Constantitems = ConstantItems.items
     private let tableView = UITableView()
     private let header = UILabel()
@@ -33,16 +33,16 @@ class userDetailViewController: UIViewController {
         self.showSaveButton()
         self.showFavouriteButton()
         if UserDefaults.standard.object(forKey: "favourite\(String(describing: u_login))")==nil{
-            FavouriteButton.image = UIImage(systemName: "star")
+            FavouriteButton.image = UIImage(systemName: ButtonSymbols.star)
         }
         else{
-            FavouriteButton.image = UIImage(systemName: "star.fill")
+            FavouriteButton.image = UIImage(systemName: ButtonSymbols.fillStar)
         }
-        if UserDefaults.standard.object(forKey: u_login ?? "")==nil{
-            DownloadButton.image = UIImage(systemName: "square.and.arrow.down")
+        if UserDefaults.standard.object(forKey: u_login )==nil{
+            DownloadButton.image = UIImage(systemName: ButtonSymbols.downloadButton)
         }
         else{
-            DownloadButton.image = UIImage(systemName: "delete.forward.fill")
+            DownloadButton.image = UIImage(systemName: ButtonSymbols.deleteButton)
         }
         self.UserViewModel.fetchData()
     }
@@ -101,7 +101,6 @@ class userDetailViewController: UIViewController {
         FavouriteButton.style = .plain
         FavouriteButton.target = self
         FavouriteButton.action = #selector(favouriteButtonAction)
-        //FavouriteButton.image = UIImage(systemName: "star")
     }
     
     @objc func favouriteButtonAction(){
@@ -109,11 +108,11 @@ class userDetailViewController: UIViewController {
         let data: String = ""
         if UserDefaults.standard.object(forKey: "favourite\(u_login)")==nil {
             UserDefaults.standard.set(data, forKey: "favourite\(u_login)")
-            FavouriteButton.image = UIImage(systemName: "star.fill")
+            FavouriteButton.image = UIImage(systemName: ButtonSymbols.fillStar)
         }
         else{
             UserDefaults.standard.removeObject(forKey: "favourite\(u_login)")
-            FavouriteButton.image = UIImage(systemName: "star")
+            FavouriteButton.image = UIImage(systemName: ButtonSymbols.star)
         }
         NotificationCenter.default.post(name: NSNotification.Name("observer"), object: nil)
     }
@@ -126,13 +125,12 @@ class userDetailViewController: UIViewController {
         
         if UserDefaults.standard.object(forKey: u_login )==nil{
             UserDefaults.standard.set(jsonString, forKey: u_login)
-            DownloadButton.image = UIImage(systemName: "delete.forward.fill")
+            DownloadButton.image = UIImage(systemName: ButtonSymbols.deleteButton)
             let dialogMessage = UIAlertController(title: "Saved", message: "Data has been saved successfully", preferredStyle: .alert)
             self.present(dialogMessage, animated: true, completion: nil)
             
             let when = DispatchTime.now() + 2
             DispatchQueue.main.asyncAfter(deadline: when){
-              // your code with delay
               dialogMessage.dismiss(animated: true, completion: nil)
             }
         }
@@ -147,37 +145,26 @@ class userDetailViewController: UIViewController {
         }
         else{
             let dialogMessage = UIAlertController(title: "Confirm", message: "Are you sure you want to delete this?", preferredStyle: .alert)
-                    
-                    // Create OK button with action handler
                     let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
                         UserDefaults.standard.removeObject(forKey: self.u_login)
-                        self.DownloadButton.image = UIImage(systemName: "square.and.arrow.down")
+                        self.DownloadButton.image = UIImage(systemName: ButtonSymbols.downloadButton)
                         let alerting = UIAlertController(title: "Deleted", message: "Data has been deleted successfully", preferredStyle: .alert)
                         self.present(alerting, animated: true, completion: nil)
-                        
                         let when = DispatchTime.now() + 1
                         DispatchQueue.main.asyncAfter(deadline: when){
-                          // your code with delay
                           alerting.dismiss(animated: true, completion: nil)
                         }
                     })
-                    
-                    // Create Cancel button with action handlder
                     let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
                         return
                     }
-                    
-                    //Add OK and Cancel button to dialog message
                     dialogMessage.addAction(ok)
                     dialogMessage.addAction(cancel)
-                    
-                    // Present dialog message to user
                     self.present(dialogMessage, animated: true, completion: nil)
-            
         }
     }
 }
-extension userDetailViewController: UITableViewDataSource {
+extension UserDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 9
     }
@@ -189,7 +176,7 @@ extension userDetailViewController: UITableViewDataSource {
         return cell
     }
 }
-extension userDetailViewController: userDetailViewControllerProtocol {
+extension UserDetailViewController: userDetailViewControllerProtocol {
     func dataLoaded() {
         details = UserViewModel.details
         self.configure()

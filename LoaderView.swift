@@ -9,7 +9,7 @@ import Foundation
 import SnapKit
 import UIKit
 
-class loadingData: UITableViewCell {
+class LoaderViewCell: UITableViewCell {
     private let spinner = UIActivityIndicatorView()
     private let loadingView = UIView()
     private let loadingLabel = UILabel()

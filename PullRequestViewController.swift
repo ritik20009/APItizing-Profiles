@@ -8,9 +8,9 @@
 import UIKit
 import SnapKit
 
-class ViewController: UIViewController, UITableViewDelegate {
+class PullRequestViewController: UIViewController, UITableViewDelegate {
     private let viewModel = HomePageViewModel()
-    let loading = loadingData()
+   // let loading = loadingData()
     private let Constantitems = ConstantItems.items
     private struct Constants {
         static let spinnerSize: CGSize = .zero
@@ -44,7 +44,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         }
         loadingLabel.text = Constantitems[1]
         loadingView.addSubview(loadingLabel)
-        loadingLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        loadingLabel.font = UIFont.systemFont(ofSize: CGFloat(NumConstants.twenty), weight: .bold)
         loadingView.addSubview(spinner)
         spinner.transform = CGAffineTransform(scaleX: 3, y: 3)
         spinner.snp.makeConstraints{make in
@@ -53,7 +53,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         }
         loadingLabel.snp.makeConstraints{make in
             make.top.bottom.right.equalToSuperview()
-            make.left.equalTo(spinner.snp.right).offset(30)
+            make.left.equalTo(spinner.snp.right).offset(NumConstants.thirty)
         }
         spinner.startAnimating()
     }
@@ -62,12 +62,12 @@ class ViewController: UIViewController, UITableViewDelegate {
         titleLabel.text = Constantitems[2]
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints{make in
-            make.top.equalToSuperview().offset(50)
+            make.top.equalToSuperview().offset(NumConstants.fifty)
             make.left.equalToSuperview().offset(175)
         }
         tableView.backgroundColor = .white
         tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: Constantitems[3])
-        tableView.register(loadingData.self, forCellReuseIdentifier: Constantitems[4])
+        tableView.register(LoaderViewCell.self, forCellReuseIdentifier: Constantitems[4])
         tableView.dataSource = self
         tableView.delegate = self
         view.addSubview(tableView)
@@ -77,16 +77,16 @@ class ViewController: UIViewController, UITableViewDelegate {
         }
     }
 }
-extension ViewController: UITableViewDataSource {
+extension PullRequestViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (response?.items?.count ?? 0)! + 1
+        return (response?.items?.count ?? NumConstants.zero)! + 1
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let tableSize = self.response?.items?.count else {
             return UITableViewCell()
         }
         if(indexPath.row==tableSize){
-            let cell = tableView.dequeueReusableCell(withIdentifier: Constantitems[4]) as! loadingData
+            let cell = tableView.dequeueReusableCell(withIdentifier: Constantitems[4]) as! LoaderViewCell
             cell.separatorInset = UIEdgeInsets(top: 0, left: cell.bounds.size.width, bottom: 0, right: 0)
             cell.showLoader()
             return cell
@@ -102,25 +102,21 @@ extension ViewController: UITableViewDataSource {
         guard let tableSize = self.response?.items?.count else {
             return
         }
-        if(indexPath.row == tableSize - 2){
-            loading.showLoader()
-            viewModel.delegate = self
-            self.viewModel.fetchData()
-        }
+        
+        viewModel.showNext(indexPath: indexPath, tableSize: tableSize)
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let userDetailsViewController = userDetailViewController()
+        let userDetailsViewController = UserDetailViewController()
         user_login = (response?.items?[indexPath.row].user?.login)!
         userDetailsViewController.u_login = user_login ?? ""
         let reloadTable:(Notification)->Void = {make in
-            print("notification received")
             tableView.reloadData()
         }
         NotificationCenter.default.addObserver(forName: NSNotification.Name("observer"), object: nil, queue: nil, using: reloadTable)
         self.navigationController?.pushViewController(userDetailsViewController, animated: true)
     }
 }
-extension ViewController: ViewControllerProtocol {
+extension PullRequestViewController: ViewControllerProtocol {
     func dataLoaded() {
         response = viewModel.response
         self.tableView.reloadData()

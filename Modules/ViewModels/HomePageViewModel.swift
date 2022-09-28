@@ -21,8 +21,14 @@ class HomePageViewModel {
             self.response?.items?.append(contentsOf: data)
             self.delegate?.dataLoaded()
             self.delegate?.hideLoader()
-            self.pagenumber+=1
+            self.pagenumber += 1
         })
+    }
+    
+    func showNext(indexPath:IndexPath, tableSize:Int){
+        if(indexPath.row == tableSize - 2){
+            self.fetchData()
+        }
     }
 }
 

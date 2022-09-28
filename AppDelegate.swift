@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         window = UIWindow(frame: UIScreen.main.bounds)
-        let viewController = ViewController()
+        let viewController = PullRequestViewController()
         if let window = (UIApplication.shared.delegate as? AppDelegate)?.window {
             window.rootViewController = UINavigationController(rootViewController: viewController)
         }
