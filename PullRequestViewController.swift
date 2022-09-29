@@ -33,6 +33,12 @@ class PullRequestViewController: UIViewController, UITableViewDelegate {
         self.configure()
         showLoader()
         viewModel.delegate = self
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+            navigationController?.navigationBar.tintColor = UIColor.black
+        let reloadTable:(Notification)->Void = {make in
+            self.tableView.reloadData()
+        }
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(NotificationCenterKeywords.observer), object: nil, queue: nil, using: reloadTable)
         self.viewModel.fetchData()
     }
     func showLoader() {
@@ -109,10 +115,6 @@ extension PullRequestViewController: UITableViewDataSource {
         let userDetailsViewController = UserDetailViewController()
         user_login = (response?.items?[indexPath.row].user?.login)!
         userDetailsViewController.u_login = user_login ?? ""
-        let reloadTable:(Notification)->Void = {make in
-            tableView.reloadData()
-        }
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("observer"), object: nil, queue: nil, using: reloadTable)
         self.navigationController?.pushViewController(userDetailsViewController, animated: true)
     }
 }

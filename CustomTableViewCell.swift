@@ -57,15 +57,14 @@ class CustomTableViewCell: UITableViewCell{
             make.centerY.equalToSuperview()
             make.bottom.lessThanOrEqualToSuperview().offset(NumConstants.negten).priority(.high)
         }
-        titleLable.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+        titleLable.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         titleLable.snp.makeConstraints{make in
-            make.right.equalToSuperview().offset(NumConstants.negten)
+            make.right.equalTo(favouriteButton).offset(20)
             make.top.equalToSuperview().offset(NumConstants.ten)
             make.left.equalTo(profileImageView.snp.right).offset(NumConstants.twenty)
         }
         favouriteButton.snp.makeConstraints{make in
-            make.top.equalToSuperview().offset(NumConstants.fifteen)
-            make.left.equalTo(titleLable).offset(215)
+            make.top.equalToSuperview().offset(12)
             make.right.equalToSuperview().offset(-5)
         }
         title.snp.makeConstraints{ make in
@@ -86,10 +85,10 @@ class CustomTableViewCell: UITableViewCell{
     
     @objc func markFavourite(){
         UserDefaults.standard.set("", forKey: Utils.shared.getKeyForFavourite(userName: username))
-        NotificationCenter.default.post(name: NSNotification.Name("observer"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(NotificationCenterKeywords.observer), object: nil)
     }
     @objc func unMarkFavourite(){
-        NotificationCenter.default.post(name: NSNotification.Name("observer"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(NotificationCenterKeywords.observer), object: nil)
         UserDefaults.standard.removeObject(forKey: Utils.shared.getKeyForFavourite(userName: username))
     }
     required init?(coder: NSCoder) {

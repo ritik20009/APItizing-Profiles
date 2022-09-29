@@ -32,7 +32,7 @@ class UserDetailViewController: UIViewController {
         UserViewModel.delegate=self
         self.showSaveButton()
         self.showFavouriteButton()
-        if UserDefaults.standard.object(forKey: "favourite\(String(describing: u_login))")==nil{
+        if UserDefaults.standard.object(forKey: Utils.shared.getKeyForFavourite(userName: u_login))==nil{
             FavouriteButton.image = UIImage(systemName: ButtonSymbols.star)
         }
         else{
@@ -106,15 +106,15 @@ class UserDetailViewController: UIViewController {
     @objc func favouriteButtonAction(){
         
         let data: String = ""
-        if UserDefaults.standard.object(forKey: "favourite\(u_login)")==nil {
-            UserDefaults.standard.set(data, forKey: "favourite\(u_login)")
+        if UserDefaults.standard.object(forKey: Utils.shared.getKeyForFavourite(userName: u_login))==nil {
+            UserDefaults.standard.set(data, forKey: Utils.shared.getKeyForFavourite(userName: u_login))
             FavouriteButton.image = UIImage(systemName: ButtonSymbols.fillStar)
         }
         else{
-            UserDefaults.standard.removeObject(forKey: "favourite\(u_login)")
+            UserDefaults.standard.removeObject(forKey: Utils.shared.getKeyForFavourite(userName: u_login))
             FavouriteButton.image = UIImage(systemName: ButtonSymbols.star)
         }
-        NotificationCenter.default.post(name: NSNotification.Name("observer"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(NotificationCenterKeywords.observer), object: nil)
     }
     @objc func saveButtonAction(){
         
@@ -126,7 +126,7 @@ class UserDetailViewController: UIViewController {
         if UserDefaults.standard.object(forKey: u_login )==nil{
             UserDefaults.standard.set(jsonString, forKey: u_login)
             DownloadButton.image = UIImage(systemName: ButtonSymbols.deleteButton)
-            let dialogMessage = UIAlertController(title: "Saved", message: "Data has been saved successfully", preferredStyle: .alert)
+            let dialogMessage = UIAlertController(title: ButtonActionConstants.saved, message: ButtonActionConstants.savedConfirmation, preferredStyle: .alert)
             self.present(dialogMessage, animated: true, completion: nil)
             
             let when = DispatchTime.now() + 2
@@ -144,18 +144,18 @@ class UserDetailViewController: UIViewController {
             return
         }
         else{
-            let dialogMessage = UIAlertController(title: "Confirm", message: "Are you sure you want to delete this?", preferredStyle: .alert)
-                    let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+            let dialogMessage = UIAlertController(title: ButtonActionConstants.confirm, message: ButtonActionConstants.askConfirmation, preferredStyle: .alert)
+            let ok = UIAlertAction(title: ButtonActionConstants.ok, style: .default, handler: { (action) -> Void in
                         UserDefaults.standard.removeObject(forKey: self.u_login)
                         self.DownloadButton.image = UIImage(systemName: ButtonSymbols.downloadButton)
-                        let alerting = UIAlertController(title: "Deleted", message: "Data has been deleted successfully", preferredStyle: .alert)
+                let alerting = UIAlertController(title: ButtonActionConstants.deleted, message: ButtonActionConstants.deletedConfirmation, preferredStyle: .alert)
                         self.present(alerting, animated: true, completion: nil)
                         let when = DispatchTime.now() + 1
                         DispatchQueue.main.asyncAfter(deadline: when){
                           alerting.dismiss(animated: true, completion: nil)
                         }
                     })
-                    let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) -> Void in
+            let cancel = UIAlertAction(title: ButtonActionConstants.cancel, style: .cancel) { (action) -> Void in
                         return
                     }
                     dialogMessage.addAction(ok)
