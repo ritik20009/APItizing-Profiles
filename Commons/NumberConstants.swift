@@ -8,9 +8,7 @@
 import Foundation
 
 
-class NumConstants {
-    static let shared = NumConstants()
-    private init() { }
+class NumberConstants {
     
     static let ten = 10
     static let twenty = 20

@@ -9,8 +9,6 @@ import Foundation
 
 
 class ButtonSymbols {
-    static let shared = ButtonSymbols()
-    private init() { }
     
     static let star = "star"
     static let fillStar = "star.fill"

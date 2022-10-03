@@ -1,15 +1,5 @@
-////
-////  UsersDetail.swift
-////  iOSLearningApp
-////
-////  Created by Ritik Raj on 20/09/22.
-////
-//
-//import Foundation
-//
-//
 
-struct UserDetail: Encodable, Decodable{
+struct UserDetail: Encodable, Decodable {
     var login: String?
     var name: String?
     var company: String?

@@ -10,12 +10,14 @@ import Foundation
 struct SampleResponse: Decodable {
     var items: [Item]?
 }
+
 struct Item: Decodable{
     var id: Double?
     var title: String?
     var user: User?
     var body: String?
 }
+
 struct User: Decodable{
     var id: Double?
     var type: String?

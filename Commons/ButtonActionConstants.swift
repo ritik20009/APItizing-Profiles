@@ -9,8 +9,6 @@ import Foundation
 
 
 class ButtonActionConstants {
-    static let shared = ButtonActionConstants()
-    private init() { }
     
     static let confirm = "Confirm"
     static let ok = "Ok"

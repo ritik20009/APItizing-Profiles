@@ -9,8 +9,6 @@ import Foundation
 
 
 class NotificationCenterKeywords {
-    static let shared = NotificationCenterKeywords()
-    private init() { }
-    
+
     static let observer = "observer"
 }

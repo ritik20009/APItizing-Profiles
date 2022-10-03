@@ -10,11 +10,11 @@ import Foundation
 
 
 class NetworkManager {
-    var response: SampleResponse? = SampleResponse(items: [])
-    var details: UserDetail?
+    
+    static let shared = NetworkManager()
+    private init() { }
     
     func fetchResponse<T: Decodable>(_ api: API, completionHandler:@escaping (T?) -> Void) {
-        
         var components = URLComponents()
         components.scheme = "https"
         components.host = api.baseUrl
@@ -29,7 +29,7 @@ class NetworkManager {
         
         components.queryItems = urlQueryItems
         
-        guard let url = components.url else{
+        guard let url = components.url else {
             return
         }
         var urlRequest = URLRequest(url: url)
@@ -55,7 +55,7 @@ class NetworkManager {
     }
     
     func fetchImage(url: String, completion: @escaping(Data) -> Void) {
-        guard let nsUrl = NSURL(string: url) else{
+        guard let nsUrl = NSURL(string: url) else {
             return
         }
         URLSession.shared.dataTask(with: nsUrl as URL, completionHandler: { (data, response, error) -> Void in

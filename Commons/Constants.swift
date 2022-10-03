@@ -7,18 +7,11 @@
 
 import Foundation
 
-struct ConstantItems {
+class ConstantItems {
     
-    static let items = [
-        
-        "None",
-        "Loading...",
-        "Users",
-        "CustomTableViewCell",
-        "loadingData",
-        "profile_image_view",
-        "User Details",
-        "CustomUserTableViewCell"
-        
-    ]
+    static let none = "None"
+    static let loading = "Loading..."
+    static let homePageHeading = "Users"
+    static let profileImage = "profile_img_view"
+    static let userTableHeading = "User Details"
 }

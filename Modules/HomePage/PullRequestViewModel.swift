@@ -6,18 +6,14 @@
 //
 
 import Foundation
-import UIKit
-class HomePageViewModel {
+
+final class PullRequestViewModel {
     var response: SampleResponse? = SampleResponse(items: [])
     var delegate:ViewControllerProtocol?
     var pagenumber = 1
     func fetchData() -> () {
-        let network = NetworkManager()
-        
-        network.fetchResponse(PullRequestApi(pageNumber: self.pagenumber), completionHandler: {(data:[Item]?) in
-            guard let data = data else {
-                return
-            }
+        NetworkManager.shared.fetchResponse(PullRequestApi(pageNumber: self.pagenumber), completionHandler: {(data:[Item]?) in
+            guard let data = data else { return }
             self.response?.items?.append(contentsOf: data)
             self.delegate?.dataLoaded()
             self.delegate?.hideLoader()
@@ -25,8 +21,8 @@ class HomePageViewModel {
         })
     }
     
-    func showNext(indexPath:IndexPath, tableSize:Int){
-        if(indexPath.row == tableSize - 2){
+    func showNext(indexPath:IndexPath, tableSize:Int) {
+        if indexPath.row == tableSize - 2 {
             self.fetchData()
         }
     }
@@ -39,12 +35,9 @@ struct PullRequestApi: API {
     var path: String{
         return "/repos/apple/swift/pulls"
     }
-    
     var QueryParams: [String : String]?{
         return ["page":"\(pageNumber)", "per_page":"\(pageSize)"]
     }
-    
     var headers: [String : String]?
-    
     var body: [String : String]?
 }
