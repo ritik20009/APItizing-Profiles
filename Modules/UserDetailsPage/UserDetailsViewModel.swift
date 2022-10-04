@@ -33,6 +33,45 @@ final class UserDetailsViewModel {
             self.delegate?.hideLoader()
         })
     }
+    
+    func showLoaderDecider() {
+        
+        let isDownloaded = DatabaseManager.shared.getData(Key: u_login)
+        if !isDownloaded {
+            self.delegate?.showLoaderDecider(isDownloaded: isDownloaded)
+        }
+    }
+    
+    func favouriteButtonAction() {
+        
+        let isFavourite = DatabaseManager.shared.getData(Key: Utils.shared.getKeyForFavourite(userName: u_login))
+        if !isFavourite {
+            DatabaseManager.shared.saveData(Value: "", Key: Utils.shared.getKeyForFavourite(userName: u_login))
+            self.delegate?.setFavouriteStateAfterClicking(isFavourite: isFavourite)
+        } else {
+            UserDefaults.standard.removeObject(forKey: Utils.shared.getKeyForFavourite(userName: u_login))
+            self.delegate?.setFavouriteStateAfterClicking(isFavourite: isFavourite)
+        }
+    }
+    
+    func saveButtonAction() {
+        
+        guard let encodedData = try? JSONEncoder().encode(details) else { return }
+        guard let jsonString = String(data: encodedData, encoding: .utf8) else { return }
+        
+        let isDownloaded = DatabaseManager.shared.getData(Key: u_login)
+        if !isDownloaded {
+            DatabaseManager.shared.saveData(Value: jsonString, Key: u_login)
+            self.delegate?.setDownloadedStateAfterClicking(isDownloaded: isDownloaded)
+        } else {
+            self.delegate?.setDeletedState(isDownloaded: isDownloaded)
+        }
+    }
+    
+    func deleteButtonAction() {
+        
+        DatabaseManager.shared.deletedata(Key: u_login)
+    }
 }
 
 struct userDetailsApi: API{

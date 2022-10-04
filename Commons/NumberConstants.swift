@@ -18,4 +18,5 @@ class NumberConstants {
     static let negten = -10
     static let hundred = 100
     static let zero = 0
+    static let nine = 9
 }

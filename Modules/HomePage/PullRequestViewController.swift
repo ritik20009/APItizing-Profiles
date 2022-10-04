@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 final class PullRequestViewController: UIViewController, UITableViewDelegate {
+    
     private let viewModel = PullRequestViewModel()
     private let titleLabel = UILabel()
     private let tableView = UITableView()

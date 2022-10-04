@@ -29,9 +29,7 @@ final class UserDetailViewController: UIViewController {
         view.backgroundColor = .white
         UserViewModel.u_login = u_login
         UserViewModel.delegate = self
-        if UserDefaults.standard.object(forKey: u_login) == nil{
-            self.showLoader()
-        }
+        UserViewModel.showLoaderDecider()
         self.showSaveButton()
         self.showFavouriteButton()
         self.UserViewModel.fetchData()
@@ -123,71 +121,24 @@ final class UserDetailViewController: UIViewController {
     }
     
     @objc func favouriteButtonAction() {
-
-        let data: String = ""
-        if UserDefaults.standard.object(forKey: Utils.shared.getKeyForFavourite(userName: u_login)) == nil {
-            UserDefaults.standard.set(data, forKey: Utils.shared.getKeyForFavourite(userName: u_login))
-            FavouriteButton.image = UIImage(systemName: ButtonSymbols.fillStar)
-        } else {
-            UserDefaults.standard.removeObject(forKey: Utils.shared.getKeyForFavourite(userName: u_login))
-            FavouriteButton.image = UIImage(systemName: ButtonSymbols.star)
-        }
+        UserViewModel.favouriteButtonAction()
         NotificationCenter.default.post(name: NSNotification.Name(NotificationCenterKeywords.observer), object: nil)
     }
     
     @objc func saveButtonAction() {
         
-        guard let encodedData = try? JSONEncoder().encode(details) else { return }
-        guard let jsonString = String(data: encodedData, encoding: .utf8) else { return }
-        
-        if UserDefaults.standard.object(forKey: u_login) == nil{
-            UserDefaults.standard.set(jsonString, forKey: u_login)
-            DownloadButton.image = UIImage(systemName: ButtonSymbols.deleteButton)
-            let dialogMessage = UIAlertController(title: ButtonActionConstants.saved, message: ButtonActionConstants.savedConfirmation, preferredStyle: .alert)
-            
-            self.present(dialogMessage, animated: true, completion: nil)
-            
-            let when = DispatchTime.now() + 1
-            DispatchQueue.main.asyncAfter(deadline: when){
-              dialogMessage.dismiss(animated: true, completion: nil)
-            }
-        } else {
-            deleteButtonAction()
-        }
-        
+        UserViewModel.saveButtonAction()
     }
     
     @objc func deleteButtonAction(){
-        if UserDefaults.standard.object(forKey: u_login) == nil{
-            return
-        } else {
-            let dialogMessage = UIAlertController(title: ButtonActionConstants.confirm, message: ButtonActionConstants.askConfirmation, preferredStyle: .alert)
-            
-            let ok = UIAlertAction(title: ButtonActionConstants.ok, style: .destructive, handler: {(action) -> Void in
-                        UserDefaults.standard.removeObject(forKey: self.u_login)
-                        self.DownloadButton.image = UIImage(systemName: ButtonSymbols.downloadButton)
-                
-            let alerting = UIAlertController(title: ButtonActionConstants.deleted, message: ButtonActionConstants.deletedConfirmation, preferredStyle: .alert)
-                
-            self.present(alerting, animated: true, completion: nil)
-            let when = DispatchTime.now() + 1
-            DispatchQueue.main.asyncAfter(deadline: when){
-                    alerting.dismiss(animated: true, completion: nil)
-                }
-            })
-            let cancel = UIAlertAction(title: ButtonActionConstants.cancel, style: .cancel) {(action) -> Void in
-                return
-            }
-            dialogMessage.addAction(ok)
-            dialogMessage.addAction(cancel)
-            self.present(dialogMessage, animated: true, completion: nil)
-        }
+        
+        UserViewModel.saveButtonAction()
     }
 }
 
 extension UserDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 9
+        return NumberConstants.nine
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -217,6 +168,14 @@ extension UserDetailViewController: userDetailViewControllerProtocol {
         }
     }
     
+    func setFavouriteStateAfterClicking(isFavourite: Bool) {
+        if !isFavourite {
+            FavouriteButton.image = UIImage(systemName: ButtonSymbols.fillStar)
+        } else {
+            FavouriteButton.image = UIImage(systemName: ButtonSymbols.star)
+        }
+    }
+    
     func setDownloadState(isDownloaded: Bool) {
         if !isDownloaded {
             DownloadButton.image = UIImage(systemName: ButtonSymbols.downloadButton)
@@ -224,11 +183,61 @@ extension UserDetailViewController: userDetailViewControllerProtocol {
             DownloadButton.image = UIImage(systemName: ButtonSymbols.deleteButton)
         }
     }
+    
+    func showLoaderDecider(isDownloaded: Bool) {
+        
+        if !isDownloaded {
+            self.showLoader()
+        }
+    }
+    
+    func setDownloadedStateAfterClicking(isDownloaded: Bool) {
+        
+        if !isDownloaded {
+            DownloadButton.image = UIImage(systemName: ButtonSymbols.deleteButton)
+            let dialogMessage = UIAlertController(title: ButtonActionConstants.saved, message: ButtonActionConstants.savedConfirmation, preferredStyle: .alert)
+            
+            self.present(dialogMessage, animated: true, completion: nil)
+            
+            let when = DispatchTime.now() + 1
+            DispatchQueue.main.asyncAfter(deadline: when){
+              dialogMessage.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func setDeletedState(isDownloaded: Bool) {
+        
+        let dialogMessage = UIAlertController(title: ButtonActionConstants.confirm, message: ButtonActionConstants.askConfirmation, preferredStyle: .alert)
+        
+        let ok = UIAlertAction(title: ButtonActionConstants.ok, style: .destructive, handler: {(action) -> Void in
+            self.UserViewModel.deleteButtonAction()
+            self.DownloadButton.image = UIImage(systemName: ButtonSymbols.downloadButton)
+            
+        let alerting = UIAlertController(title: ButtonActionConstants.deleted, message: ButtonActionConstants.deletedConfirmation, preferredStyle: .alert)
+            
+        self.present(alerting, animated: true, completion: nil)
+        let when = DispatchTime.now() + 1
+        DispatchQueue.main.asyncAfter(deadline: when){
+                alerting.dismiss(animated: true, completion: nil)
+            }
+        })
+        let cancel = UIAlertAction(title: ButtonActionConstants.cancel, style: .cancel) {(action) -> Void in
+            return
+        }
+        dialogMessage.addAction(ok)
+        dialogMessage.addAction(cancel)
+        self.present(dialogMessage, animated: true, completion: nil)
+    }
 }
 
 protocol userDetailViewControllerProtocol: AnyObject {
     func dataLoaded()
     func hideLoader()
+    func showLoaderDecider(isDownloaded: Bool)
     func setFavouriteState(isFavourite: Bool)
+    func setFavouriteStateAfterClicking(isFavourite: Bool)
     func setDownloadState(isDownloaded: Bool)
+    func setDownloadedStateAfterClicking(isDownloaded: Bool)
+    func setDeletedState(isDownloaded: Bool)
 }

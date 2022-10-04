@@ -26,10 +26,10 @@ final class UserDetailsTableViewCell: UITableViewCell {
     private let containerView = UIView()
 
     private func configure() {
-        self.configureContentView()
-        self.configureContainerView()
-        self.configureKeyLabel()
-        self.configureValueLabel()
+        configureContentView()
+        configureContainerView()
+        configureKeyLabel()
+        configureValueLabel()
     }
     
     private func configureContentView() {
@@ -64,7 +64,6 @@ final class UserDetailsTableViewCell: UITableViewCell {
     }
     
     private func configureProfileImageView() {
-        
         ProfileImgView.image = UIImage(named: ConstantItems.profileImage)
         ProfileImgView.clipsToBounds = true
         ProfileImgView.layer.cornerRadius = 100
@@ -84,12 +83,9 @@ final class UserDetailsTableViewCell: UITableViewCell {
     private func setProfileImage(avatarUrl: String){
         
         let setImage = {(data: Data) -> Void in
-            guard let image = UIImage(data: data) else {
-                return
-            }
+            guard let image = UIImage(data: data) else { return }
             self.ProfileImgView.image = image
         }
-
         NetworkManager.shared.fetchImage(url: avatarUrl, completion: setImage)
     }
     
