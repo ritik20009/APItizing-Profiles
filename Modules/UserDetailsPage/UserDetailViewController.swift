@@ -32,6 +32,7 @@ final class UserDetailViewController: UIViewController {
         UserViewModel.showLoaderDecider()
         self.showSaveButton()
         self.showFavouriteButton()
+        UserViewModel.setDownloadButton()
         self.UserViewModel.fetchData()
     }
 

@@ -122,7 +122,7 @@ final class PullRequestTableViewCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError(ErrorDescription.fatalError)
     }
     
     func setData(data: Item?) -> String {

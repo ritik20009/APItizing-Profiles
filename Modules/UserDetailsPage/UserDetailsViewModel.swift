@@ -42,6 +42,13 @@ final class UserDetailsViewModel {
         }
     }
     
+    func setDownloadButton() {
+        
+        let isDownloaded: Bool
+        isDownloaded = DatabaseManager.shared.getData(Key: u_login)
+        self.delegate?.setDownloadState(isDownloaded: isDownloaded)
+    }
+    
     func favouriteButtonAction() {
         
         let isFavourite = DatabaseManager.shared.getData(Key: Utils.shared.getKeyForFavourite(userName: u_login))
